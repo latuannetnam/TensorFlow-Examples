@@ -16,7 +16,7 @@ rng = numpy.random
 learning_rate = 0.01
 training_epochs = 1000
 display_step = 50
-logs_path = '/tmp/tensorflow_logs/linear'
+logs_path = '/tmp/tensorflow_logs/linear_polynomial'
 
 # Training Data
 train_X = numpy.asarray([3.3, 4.4, 5.5, 6.71, 6.93, 4.168, 9.779, 6.182, 7.59, 2.167,
@@ -27,16 +27,18 @@ n_samples = train_X.shape[0]
 
 with tf.name_scope('Input'):
     # tf Graph Input
-    X = tf.placeholder("float", name='x')
+    X = tf.placeholder("float", name='x1')
 with tf.name_scope('Label'):
-    Y = tf.placeholder("float", name='y')
-
-# Set model weights
-W = tf.Variable(rng.randn(), name="Weights")
-b = tf.Variable(rng.randn(), name="Bias")
+    Y = tf.placeholder("float", name='y1')
+with tf.name_scope('Weights'):
+    # Set model weights
+    W1 = tf.Variable(rng.randn(), name="W1")
+    W2 = tf.Variable(rng.randn(), name="W2")
+with tf.name_scope('Bias'):
+    b = tf.Variable(rng.randn(), name="b")
 with tf.name_scope('Model'):
     # Construct a linear model
-    pred = tf.add(tf.multiply(X, W), b)
+    pred = tf.multiply(X, W1)  + tf.multiply(tf.pow(X, 2), W2) + b
 with tf.name_scope('Loss'):
     # Mean squared error
     cost = tf.reduce_sum(tf.pow(pred - Y, 2)) / (2 * n_samples)
@@ -82,12 +84,12 @@ with tf.Session() as sess:
         if (epoch + 1) % display_step == 0:
             c = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
             print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(c),
-                  "W=", sess.run(W), "b=", sess.run(b))
+                  "W1=", sess.run(W1),"W2=", sess.run(W2), "b=", sess.run(b))
 
     print("Optimization Finished!")
     training_cost = sess.run(cost, feed_dict={X: train_X, Y: train_Y})
-    print("Training cost=", training_cost, "W=",
-          sess.run(W), "b=", sess.run(b), '\n')
+    print("Training cost=", training_cost, "W1=",
+          sess.run(W1),"W2=",sess.run(W2), "b=", sess.run(b), '\n')
 
     # Graphic display
     # plt.plot(train_X, train_Y, 'ro', label='Original data')
