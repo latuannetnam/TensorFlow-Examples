@@ -19,10 +19,13 @@ display_step = 50
 logs_path = '/tmp/tensorflow_logs/linear'
 
 # Training Data
-train_X = numpy.asarray([3.3, 4.4, 5.5, 6.71, 6.93, 4.168, 9.779, 6.182, 7.59, 2.167,
-                         7.042, 10.791, 5.313, 7.997, 5.654, 9.27, 3.1])
-train_Y = numpy.asarray([1.7, 2.76, 2.09, 3.19, 1.694, 1.573, 3.366, 2.596, 2.53, 1.221,
-                         2.827, 3.465, 1.65, 2.904, 2.42, 2.94, 1.3])
+# train_X = numpy.asarray([3.3, 4.4, 5.5, 6.71, 6.93, 4.168, 9.779, 6.182, 7.59, 2.167,
+#                          7.042, 10.791, 5.313, 7.997, 5.654, 9.27, 3.1])
+# train_Y = numpy.asarray([1.7, 2.76, 2.09, 3.19, 1.694, 1.573, 3.366, 2.596, 2.53, 1.221,
+#                          2.827, 3.465, 1.65, 2.904, 2.42, 2.94, 1.3])
+train_X = numpy.arange(100)
+train_Y = 2 * train_X + 5
+
 n_samples = train_X.shape[0]
 
 with tf.name_scope('Input'):
@@ -44,7 +47,7 @@ with tf.name_scope('SGD'):
     # Gradient descent
     # Note, minimize() knows to modify W and b because Variable objects are
     # trainable=True by default
-    #optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
+    # optimizer = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
     # Gradient Descent
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     # Op to calculate every variable gradient
@@ -90,10 +93,10 @@ with tf.Session() as sess:
           sess.run(W), "b=", sess.run(b), '\n')
 
     # Graphic display
-    # plt.plot(train_X, train_Y, 'ro', label='Original data')
-    # plt.plot(train_X, sess.run(W) * train_X + sess.run(b), label='Fitted line')
-    # plt.legend()
-    # plt.show()
+    plt.plot(train_X, train_Y, 'ro', label='Original data')
+    plt.plot(train_X, sess.run(W) * train_X + sess.run(b), label='Fitted line')
+    plt.legend()
+    plt.show()
 
     # Testing example, as requested (Issue #2)
     test_X = numpy.asarray([6.83, 4.668, 8.9, 7.91, 5.7, 8.7, 3.1, 2.1])
